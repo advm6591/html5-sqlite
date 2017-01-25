@@ -530,8 +530,8 @@ ReciboService.prototype = {
                 service.getAll(function(clientes) {
                     var html1 = "";
                     for (var i = 0; i < clientes.length; i++) {
-                      html1 += '<option value="' + i + '">' + i  + ' Traer nombre</option>';
-                        //html += obj.createRowHtml_cliente(clientes[i]);
+                      //html1 += '<option value="' + i + '">' + i  + ' Traer nombre</option>';
+                        html1 += obj.createRowHtml_cliente(clientes[i]);
                     }
                     $("#txtcliente_id").html(html1);
                 });
@@ -555,6 +555,7 @@ ReciboService.prototype = {
             var recibo = new Recibo();
             recibo.id = $("#hfId").val() * 1;
             recibo.cliente_id = $("#txtcliente_id").val();
+            //<td>' + recibo.cliente_id + '</td>\
             recibo.domicilio = $("#txtdomicilio").val();
             recibo.fecha = $("#txtfecha").val();
             recibo.monto_total = $("#txtmonto").val();
@@ -578,6 +579,11 @@ ReciboService.prototype = {
                                 <input type="button" value="delete" class="btn-delete"/>\
                             </td>\
                         </tr>';
+            return html;
+        },
+
+        createRowHtml_cliente: function(cliente) {
+            var html = '<option value="' + cliente.id + '">' + cliente.dni + '</option>';
             return html;
         },
 

@@ -17,6 +17,21 @@
     <script src="js/jquery-1.7.2.min.js"></script>
     <script src="js/nova.data.js"></script>
     <script src="js/demo.js"></script>
+    <script language="javascript" type="text/javascript">
+        function valida(e){
+            tecla = (document.all) ? e.keyCode : e.which;
+
+            //Tecla de retroceso para borrar, siempre la permite
+            if (tecla==8){
+                return true;
+            }
+                
+            // Patron de entrada, en este caso solo acepta numeros
+            patron =/[0-9]/;
+            tecla_final = String.fromCharCode(tecla);
+            return patron.test(tecla_final);
+        }
+    </script>
 </head>
 
 <body>
@@ -36,7 +51,7 @@
 
     <section id="intro" class="wrapper style1 fade-up">
         <div class="inner">
-            <h1>Registro de Clientes</h1>
+            <h1>Registro de Recibos</h1>
             <p>Ingrese la información requerida</p>
             <ul class="actions">
                 <li><a href="index.html" class="button scrolly">Volver</a></li>
@@ -51,21 +66,24 @@
             <div>
                 <input type="hidden" name="id" value="0" id="hfId"/>
 
-                <!--<td>Seleccione un cliente: <select id="txtcliente_id" name="txtcliente_id"></select></td>-->
+                Seleccione un cliente: 
+                <select id="txtcliente_id" name="txtcliente_id"></select>
 
                 <div>
-                  Ingrese una fecha  <input type="date" id="txtfecha" name="txtfecha" placeholder="Monto Concepto 1">
-                    <input type="text" id="txtcliente_id" name="txtcliente_id" placeholder="txtcliente_id">
+                    Ingrese una fecha:
+                    <input type="date" id="txtfecha" name="txtfecha" placeholder="Fecha">
+                    <span class="ccform-addon"><i class="fa fa-calendar fa-2x"></i></span> 
+                    <!--<input type="text" id="txtcliente_id" name="txtcliente_id" placeholder="txtcliente_id">-->
                 </div>
 
 
                 <div class="ccfield-prepend">
                     <span class="ccform-addon"><i class="fa fa-check-square fa-2x"></i></span>
-                    <input class="ccformfield"  type="text" id="txtdomicilio" placeholder="Monto txtdomicilio 1" required="required">
+                    <input class="ccformfield"  type="text" id="txtdomicilio" placeholder="Domicilio" required="required">
                 </div>
 
 
-                <div class="ccfield-prepend">
+                <!--<div class="ccfield-prepend">
                     <span class="ccform-addon"><i class="fa fa-check-square fa-2x"></i></span>
                     <input class="ccformfield"  type="text" id="txtcliente_id" placeholder="txtcliente_id 1" required="required">
                     <input class="ccformfield"  type="text" id="txtdomicilio" placeholder="Monto txtdomicilio 1" required="required">
@@ -81,12 +99,12 @@
                     <span class="ccform-addon"><i class="fa fa-check-square fa-2x"></i></span>
                     <input class="ccformfield"  type="text" id="username" placeholder="Concepto 3" required="required">
                     <input class="ccformfield"  type="text" id="username" placeholder="Monto Concepto 3" required="required">
-                </div>
+                </div>-->
 
 
                 <div class="ccfield-prepend">
-                    <span class="ccform-addon"><i class="fa fa-user fa-2x"></i></span>
-                    <input class="ccformfield" type="text" id="txtmonto" placeholder="Monto Total" READONLY>
+                    <span class="ccform-addon"><i class="fa fa-money fa-2x"></i></span>
+                    <input class="ccformfield" type="text" id="txtmonto" placeholder="Monto Total" onkeypress="return valida(event);" value="0">
                 </div>
 
 
@@ -104,12 +122,14 @@
             <thead>
             <tr>
                 <th>DNI</th>
-                <th>Nombres</th>
+                <th>Domicilio</th>
+                <th>Fecha</th>
                 <th>Total</th>
             </tr>
             </thead>
             <tbody id="recibos">
             <tr>
+                <td> - </td>
                 <td> - </td>
                 <td> - </td>
                 <td> - </td>
@@ -136,9 +156,11 @@
 </body>
 <script language="javascript" type="text/javascript">
     $(document).ready(function () {
+
         demo.db.init(function () {
             new demo.pages.Recibos().onLoaded();
         });
+
     });
 </script>
 </html>
