@@ -18,6 +18,8 @@
     <script src="js/nova.data.js"></script>
     <script src="js/demo.js"></script>
     <script language="javascript" type="text/javascript">
+
+        var suma_total = Number(0);
         function valida(e){
             tecla = (document.all) ? e.keyCode : e.which;
 
@@ -30,6 +32,39 @@
             patron =/[0-9]/;
             tecla_final = String.fromCharCode(tecla);
             return patron.test(tecla_final);
+        }
+
+        function ShowSelected()
+        {
+            /* Para obtener el valor */
+            var cod = $("#txtcliente_id").val();
+            alert(cod);
+            
+        }
+
+        function sumar()
+        {
+            var suma1, suma2 = 0;
+
+            /* Para obtener el valor */
+            if($("#txtmonto_concepto").val() != "" && $("#txtmonto_concepto").val() != 0){
+                suma1 = parseFloat($("#txtmonto_concepto").val());
+            } else {
+                suma1 = 0;
+            }
+
+
+            /*if($("#txtmonto_concepto1").val() != "" && $("#txtmonto_concepto1").val() != 0){
+                suma2 = Number($("#txtmonto_concepto1").val());
+            } else {
+                suma2 = 0;
+            }*/
+
+            suma_total = suma1 + suma2;
+
+
+            $("#txtmonto").val(suma_total);
+            
         }
     </script>
 </head>
@@ -67,7 +102,9 @@
                 <input type="hidden" name="id" value="0" id="hfId"/>
 
                 Seleccione un cliente: 
-                <select id="txtcliente_id" name="txtcliente_id"></select>
+                <select id="txtcliente_id" name="txtcliente_id">
+                </select>
+
 
                 <div>
                     Ingrese una fecha:
@@ -75,13 +112,27 @@
                     <span class="ccform-addon"><i class="fa fa-calendar fa-2x"></i></span> 
                     <!--<input type="text" id="txtcliente_id" name="txtcliente_id" placeholder="txtcliente_id">-->
                 </div>
-
-
+                <br>
                 <div class="ccfield-prepend">
-                    <span class="ccform-addon"><i class="fa fa-check-square fa-2x"></i></span>
-                    <input class="ccformfield"  type="text" id="txtdomicilio" placeholder="Domicilio" required="required">
+                    <input class="ccformfield"  type="text" id="txtdomicilio" placeholder="Domicilio" required="required" Readonly>
                 </div>
 
+                <br>
+
+               
+                <div class="ccfield-prepend">
+                     Seleccione un Concepto: 
+                    <select id="txtconcepto_id" name="txtconcepto_id">
+                    </select>
+                    <input class="ccformfield" type="text" id="txtmonto_concepto" placeholder="Monto Concepto" onkeypress="return valida(event);" onkeyup="sumar();" value="0">
+                </div>
+
+                <!--<div class="ccfield-prepend">
+                     Seleccione un Concepto: 
+                    <select id="txtconcepto_id1" name="txtconcepto_id1">
+                    </select>
+                    <input class="ccformfield" type="text" id="txtmonto_concepto1" placeholder="Monto Concepto" onkeypress="return valida(event);" onkeyup="sumar();" value="0">
+                </div>-->
 
                 <!--<div class="ccfield-prepend">
                     <span class="ccform-addon"><i class="fa fa-check-square fa-2x"></i></span>
@@ -104,7 +155,7 @@
 
                 <div class="ccfield-prepend">
                     <span class="ccform-addon"><i class="fa fa-money fa-2x"></i></span>
-                    <input class="ccformfield" type="text" id="txtmonto" placeholder="Monto Total" onkeypress="return valida(event);" value="0">
+                    <input class="ccformfield" type="text" id="txtmonto" placeholder="Monto Total" value="0" readonly>
                 </div>
 
 

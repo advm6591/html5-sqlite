@@ -2500,6 +2500,10 @@
 		border-radius: 100%;
 	}
 
+	input[type="date"] {
+		color: black;
+	}
+
 	::-webkit-input-placeholder {
 		color: rgba(255, 255, 255, 0.35) !important;
 		opacity: 1.0;

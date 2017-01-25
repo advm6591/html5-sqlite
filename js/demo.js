@@ -35,7 +35,7 @@ change the version parameter on line:
     nova.data.DbContext.call(...);
 */
 DemoDbContext = function () {
-    nova.data.DbContext.call(this, "recibos4", 1, "recibos4", 1000001);
+    nova.data.DbContext.call(this, "recibos0", 1, "recibos0", 1000001);
    // nova.data.DbContext.call(this, "DB Prueba", 0.1, "Database Prueba", 1);
 
     this.logSqls = true;
@@ -44,6 +44,8 @@ DemoDbContext = function () {
     this.clientes = new nova.data.Repository(this, Cliente, "clientes");
     this.recibos = new nova.data.Repository(this, Recibo, "recibos");
     this.conceptos = new nova.data.Repository(this, Concepto, "conceptos");
+    this.recibosconceptos = new nova.data.Repository(this, Recibosconceptos, "recibosconceptos");
+
 };
 
 DemoDbContext.prototype = new nova.data.DbContext();
@@ -420,6 +422,7 @@ ClienteService.prototype = {
             $("#apellidos").val("");
             $("#dni").val("");
             $("#empresa").val("");
+            $("#direcion").val("");
             $("#btnAdd").show();
             $("#btnUpdate, #btnCancel").hide();
         },
@@ -529,11 +532,24 @@ ReciboService.prototype = {
                 var service = new ClienteService();
                 service.getAll(function(clientes) {
                     var html1 = "";
+                    html1 += '<option value="0">Seleccione un Cliente</option>';
                     for (var i = 0; i < clientes.length; i++) {
                       //html1 += '<option value="' + i + '">' + i  + ' Traer nombre</option>';
                         html1 += obj.createRowHtml_cliente(clientes[i]);
                     }
                     $("#txtcliente_id").html(html1);
+                });
+
+                var service1 = new ConceptoService();
+                service1.getAll(function(conceptos) {
+                    var html1 = "";
+                    html1 += '<option value="0">Seleccione un concepto</option>';
+                    for (var i = 0; i < conceptos.length; i++) {
+                      //html1 += '<option value="' + i + '">' + i  + ' Traer nombre</option>';
+                        html1 += obj.createRowHtml_concepto(conceptos[i]);
+                    }
+                    $("#txtconcepto_id").html(html1);
+                    $("#txtconcepto_id1").html(html1);
                 });
 
             this.loadRecibos();
@@ -583,7 +599,12 @@ ReciboService.prototype = {
         },
 
         createRowHtml_cliente: function(cliente) {
-            var html = '<option value="' + cliente.id + '">' + cliente.dni + '</option>';
+            var html = '<option value="' + cliente.id + '">' + cliente.dni + ' - ' + cliente.nombres + ' ' + cliente.apellidos + '</option>';
+            return html;
+        },
+
+        createRowHtml_concepto: function(concepto) {
+            var html = '<option value="' + concepto.id + '">' + concepto.nomconcepto + '</option>';
             return html;
         },
 
@@ -611,7 +632,7 @@ ReciboService.prototype = {
             $("#txtcliente_id").val("");
             $("#txtdomicilio").val("");
             $("#txtfecha").val("");
-            $("#txtmonto").val("");
+            $("#txtmonto").val(0);
             $("#btnAdd").show();
             $("#btnUpdate, #btnCancel").hide();
         },
@@ -635,6 +656,7 @@ ReciboService.prototype = {
                 $(sender).closest("tr").remove();
             });
         }
+
     };
 })();
 
@@ -797,3 +819,23 @@ ConceptoService.prototype = {
         }
     };
 })();
+
+
+
+////////////////////////******* RECIBOS-CONCEPTOS **********/////////////////////
+
+var Recibosconceptos = function () {
+    nova.data.Entity.call(this);
+    this.recibos_id = new Date();
+    this.conceptos_id = new Date();
+    this.monto_concepto = 0;
+};
+
+Recibosconceptos.prototype = new nova.data.Entity();
+Recibosconceptos.constructor = Recibosconceptos;
+
+Recibosconceptos.prototype.updateFrom = function(recibosconceptos) {
+    this.recibos_id = recibosconceptos.recibos_id;
+    this.conceptos_id = recibosconceptos.conceptos_id;
+    this.monto_concepto = recibosconceptos.monto_concepto;
+};
