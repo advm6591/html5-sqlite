@@ -525,6 +525,10 @@ ReciboService.prototype = {
                 obj.change();
             });
 
+            $("#txtconcepto_id").change(function() {
+                obj.changeConcepto();
+            });
+
                 var service = new ClienteService();
                 service.getAll(function(clientes) {
                     var html1 = "";
@@ -693,7 +697,46 @@ ReciboService.prototype = {
                     $("#txtdomicilio").val(user.direcion);
                 });
             } 
+        },
+        changeConcepto: function() {
+
+            var text = $("#txtconcepto_id option:selected" ).html();
+            
+            //(console.log("Entre aqui: "  + MaxInputs);
+            console.log("ID Concepto: " + $("#txtconcepto_id").val());
+            console.log("text Concepto: " + text);
+            var MaxInputs       = 8; //Número Maximo de Campos
+            var contenedor       = $("#contenedor"); //ID del contenedor
+            var AddButton       = $("#agregarCampo"); //ID del Botón Agregar
+
+            //var x = número de campos existentes en el contenedor
+            var x = $("#contenedor div").length + 1;
+            var FieldCount = x-1; //para el seguimiento de los campos
+
+            console.log("Entre aqui: "  + MaxInputs);
+            console.log("Entre aqui: "  + x);
+            
+            if(x <= MaxInputs) //max input box allowed
+            {
+                //FieldCount++;
+                //agregar campo
+                $(contenedor).append('<div><input type="text" name="mitexto[]" id="campo_'+ FieldCount +'" placeholder="Ingrese el monto correspondiente '+ FieldCount +'"/><a href="#" class="eliminar">&times;</a></div>');
+                x++; //text box increment
+                FieldCount++;
+            }
+                
+
+            $("body").on("click",".eliminar", function(e){ //click en eliminar campo
+                if( x > 1 ) {
+                    $(this).parent('div').remove(); //eliminar el campo
+                    x--;
+                    FieldCount--;
+                }
+                return false;
+            });
         }
+
+
 
     };
 })();
