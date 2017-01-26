@@ -30,12 +30,12 @@ Date.prototype.display = function() {
 })();
 
 
-/* if you want to re-create the DB(due to schema changes, re-init sample data, etc.),
+/* if you want to re-create the DB(due to schema changes, re-init sample data, etc.), 
 change the version parameter on line:
     nova.data.DbContext.call(...);
 */
 DemoDbContext = function () {
-    nova.data.DbContext.call(this, "recibos0", 1, "recibos0", 1000001);
+    nova.data.DbContext.call(this, "recibos4", 1, "recibos4", 1000001);
    // nova.data.DbContext.call(this, "DB Prueba", 0.1, "Database Prueba", 1);
 
     this.logSqls = true;
@@ -44,8 +44,6 @@ DemoDbContext = function () {
     this.clientes = new nova.data.Repository(this, Cliente, "clientes");
     this.recibos = new nova.data.Repository(this, Recibo, "recibos");
     this.conceptos = new nova.data.Repository(this, Concepto, "conceptos");
-    this.recibosconceptos = new nova.data.Repository(this, RecibosConceptos, "recibosconceptos");
-
 };
 
 DemoDbContext.prototype = new nova.data.DbContext();
@@ -167,9 +165,15 @@ UserService.prototype = {
             var service = new UserService();
             service.getAll(function(users) {
                 var html = "";
+                /*for (var i = 0; i < users.length; i++) {
+                    html += obj.createRowHtml(users[i]);
+                }*/
                 for (var i = 0; i < users.length; i++) {
+                    //html += '<option value="' + i + '">' + users.username.val() + '</option>';
                     html += '<option value="' + i + '">' + i + '</option>';
                 }
+
+
                 $("#users").html(html);
             });
         },
@@ -183,7 +187,7 @@ UserService.prototype = {
         },
         bindForm: function (user) {
             $("#hfId").val(user.id);
-            $("#nombres").val(user.username);
+            $("#txtUsername").val(user.username);
             $("#ddlYears").val(user.birthYear);
             $("#ddlDisabled").val(user.isDisabled);
         },
@@ -270,7 +274,7 @@ Cliente.prototype = new nova.data.Entity();
 Cliente.constructor = Cliente;
 
 Cliente.prototype.updateFrom = function(cliente) {
-    this.nombres = cliente.nombres;
+    this.username = cliente.username;
     this.apellidos = cliente.apellidos;
     this.dni = cliente.dni;
     this.empresa = cliente.empresa;
@@ -360,7 +364,7 @@ ClienteService.prototype = {
         parseCliente: function() {
             var cliente = new Cliente();
             cliente.id = $("#hfId").val() * 1;
-            cliente.nombres = $("#nombres").val();
+            cliente.nombres = $("#username").val();
             cliente.apellidos = $("#apellidos").val();
             cliente.dni = $("#dni").val();
             cliente.empresa = $("#empresa").val();
@@ -369,7 +373,7 @@ ClienteService.prototype = {
         },
         bindForm: function (cliente) {
             $("#hfId").val(cliente.id);
-            $("#nombres").val(cliente.nombres);
+            $("#username").val(cliente.nombres);
             $("#apellidos").val(cliente.apellidos);
             $("#dni").val(cliente.dni);
             $("#empresa").val(cliente.empresa);
@@ -412,11 +416,10 @@ ClienteService.prototype = {
             });
         },
         reset: function() {
-            $("#nombres").val("");
+            $("#username").val("");
             $("#apellidos").val("");
             $("#dni").val("");
             $("#empresa").val("");
-            $("#direcion").val("");
             $("#btnAdd").show();
             $("#btnUpdate, #btnCancel").hide();
         },
@@ -442,6 +445,8 @@ ClienteService.prototype = {
         }
     };
 })();
+
+
 
 
 ////////////////////**********  RECIBOS ********** //////////////////
@@ -480,7 +485,6 @@ ReciboService.prototype = {
     deleteRecibo:function(id, callback) {
         var db = demo.db.getInstance();
         db.recibos.removeByWhere("id=" + id, callback);
-        db.recibosconceptos.removeByWhere("recibos_id=" + id, callback);
     },
     update:function(recibo, callback) {
         var db = demo.db.getInstance();
@@ -521,31 +525,15 @@ ReciboService.prototype = {
             $(".btn-edit").live("click", function() {
                 obj.edit(this);
             });
-            $("#txtcliente_id").change(function() {
-                obj.change();
-            });
 
                 var service = new ClienteService();
                 service.getAll(function(clientes) {
                     var html1 = "";
-                    html1 += '<option value="0">Seleccione un Cliente</option>';
                     for (var i = 0; i < clientes.length; i++) {
-                      //html1 += '<option value="' + i + '">' + i  + ' Traer nombre</option>';
-                        html1 += obj.createRowHtml_cliente(clientes[i]);
+                      html1 += '<option value="' + i + '">' + i  + ' Traer nombre</option>';
+                        //html += obj.createRowHtml_cliente(clientes[i]);
                     }
                     $("#txtcliente_id").html(html1);
-                });
-
-                var service1 = new ConceptoService();
-                service1.getAll(function(conceptos) {
-                    var html1 = "";
-                    html1 += '<option value="0">Seleccione un concepto</option>';
-                    for (var i = 0; i < conceptos.length; i++) {
-                      //html1 += '<option value="' + i + '">' + i  + ' Traer nombre</option>';
-                        html1 += obj.createRowHtml_concepto(conceptos[i]);
-                    }
-                    $("#txtconcepto_id").html(html1);
-                    $("#txtconcepto_id1").html(html1);
                 });
 
             this.loadRecibos();
@@ -572,14 +560,6 @@ ReciboService.prototype = {
             recibo.monto_total = $("#txtmonto").val();
             return recibo;
         },
-        parseRecibosConceptos: function(id_recibo) {
-            var recibosconceptos = new RecibosConceptos();
-            recibosconceptos.id = $("#hfId").val() * 1;
-            recibosconceptos.recibos_id = id_recibo;
-            recibosconceptos.conceptos_id = $("#txtconcepto_id").val();
-            recibosconceptos.monto_concepto = $("#campo_1").val();
-            return recibosconceptos;
-        },
         bindForm: function (recibo) {
             $("#hfId").val(recibo.id);
             $("#txtcliente_id").val(recibo.cliente_id);
@@ -601,32 +581,13 @@ ReciboService.prototype = {
             return html;
         },
 
-        createRowHtml_cliente: function(cliente) {
-            var html = '<option value="' + cliente.id + '">' + cliente.dni + ' - ' + cliente.nombres + ' ' + cliente.apellidos + '</option>';
-            return html;
-        },
-
-        createRowHtml_concepto: function(concepto) {
-            var html = '<option value="' + concepto.id + '">' + concepto.nomconcepto + '</option>';
-            return html;
-        },
-
         add: function() {
             var obj = this;
             var recibo = this.parseRecibo();
             var service = new ReciboService();
             service.add(recibo, function() {
                 $("#recibos").append(obj.createRowHtml(recibo));
-                obj.addRecibosConceptos(recibo.id);
                 obj.reset();
-            });
-        },
-        addRecibosConceptos: function(id_recibo) {
-            var obj = this;
-            var reciboconcepto = this.parseRecibosConceptos(id_recibo);
-            var service = new ReciboConceptoService();
-            service.add(reciboconcepto, function() {
-                console.log("ReciboConcepto_ID: " + reciboconcepto.id);
             });
         },
         update: function() {
@@ -636,18 +597,6 @@ ReciboService.prototype = {
             service.update(recibo, function() {
                 var $tr = $('tr[data-id="' + recibo.id + '"]');
                 $tr.replaceWith(obj.createRowHtml(recibo));
-                obj.updateRecibosConceptos(recibo.id);
-                obj.reset();
-                $("#formEdit")[0].reset();
-            });
-        },
-        updateRecibosConceptos: function(id_recibo) {
-            var obj = this;
-            var service = new ReciboConceptoService();
-            var reciboconcepto = this.parseRecibosConceptos(id_recibo);
-            service.updateReciboConcepto(reciboconcepto, function() {
-                //var $tr = $('tr[data-id="' + reciboconcepto.id + '"]');
-                //$tr.replaceWith(obj.createRowHtml(recibo));
                 obj.reset();
                 $("#formEdit")[0].reset();
             });
@@ -656,9 +605,7 @@ ReciboService.prototype = {
             $("#txtcliente_id").val("");
             $("#txtdomicilio").val("");
             $("#txtfecha").val("");
-            $("#txtmonto").val(0);
-            $("#txtconcepto_id").val("");
-            $("#campo_1").val(0);
+            $("#txtmonto").val("");
             $("#btnAdd").show();
             $("#btnUpdate, #btnCancel").hide();
         },
@@ -681,20 +628,7 @@ ReciboService.prototype = {
             service.deleteRecibo(id, function() {
                 $(sender).closest("tr").remove();
             });
-        },
-        change: function() {
-            
-            var id = $("#txtcliente_id").val();
-            var service = new ClienteService();
-            if(id==0){
-                $("#txtdomicilio").val("");
-            } else {
-                service.get(id, function(user) {
-                    $("#txtdomicilio").val(user.direcion);
-                });
-            } 
         }
-
     };
 })();
 
@@ -857,125 +791,3 @@ ConceptoService.prototype = {
         }
     };
 })();
-
-
-
-////////////////////////******* RECIBOS-CONCEPTOS **********/////////////////////
-
-var RecibosConceptos = function () {
-    nova.data.Entity.call(this);
-    this.recibos_id = "";
-    this.conceptos_id = "";
-    this.monto_concepto = 0;
-};
-
-RecibosConceptos.prototype = new nova.data.Entity();
-RecibosConceptos.constructor = RecibosConceptos;
-
-RecibosConceptos.prototype.updateFrom = function(recibosconceptos) {
-    this.recibos_id = recibosconceptos.recibos_id;
-    this.conceptos_id = recibosconceptos.conceptos_id;
-    this.monto_concepto = recibosconceptos.monto_concepto;
-};
-
-var ReciboConceptoService = function() {
-};
-
-ReciboConceptoService.prototype = {
-    getAll: function (callback) {
-        demo.db.getInstance().recibosconceptos.toArray(callback);
-    },
-    add:function(reciboconcepto, callback) {
-        var db = demo.db.getInstance();
-        db.recibosconceptos.add(reciboconcepto);
-        db.saveChanges(callback);
-    },
-    deleteReciboConcepto:function(id, callback) {
-        var db = demo.db.getInstance();
-        db.recibosconceptos.removeByWhere("id=" + id, callback);
-    },
-    update:function(reciboconcepto, callback) {
-        var db = demo.db.getInstance();
-        db.reciboconcepto.where("id=" + reciboconcepto.id).firstOrDefault(function(dbReciboConceptos) {
-            dbRecibosConceptos.updateFrom(reciboconcepto);
-            db.recibosconceptos.update(dbReciboConceptos);
-            db.saveChanges(function() {
-                callback && callback();
-            });
-        });
-    },
-    updateReciboConcepto:function(reciboconcepto, callback) {
-        var db = demo.db.getInstance();
-        db.recibosconceptos.where("recibos_id=" + reciboconcepto.id).firstOrDefault(function(dbRecibosConceptos) {
-            dbRecibosConceptos.updateFrom(reciboconcepto);
-            db.recibosconceptos.update(dbRecibosConceptos);
-            db.saveChanges(function() {
-                //cliente.lastUpdatedTime = dbCliente.lastUpdatedTime;
-                callback && callback();
-            });
-        });
-    },
-    get:function(id, callback) {
-        demo.db.getInstance().recibosconceptos.firstOrDefault(callback, "id=" + id);
-    }
-};
-
-(function() {
-    demo.pages.ReciboConceptos = function() {
-
-    };
-
-    demo.pages.ReciboConceptos.prototype = {
-        onLoaded: function() {
-            var obj = this;
-            $("#btnAdd").click(function() {
-                obj.add();
-            });
-            $("#btnUpdate").click(function() {
-                obj.update();
-            });
-            $("#btnCancel").click(function() {
-                obj.reset();
-            });
-            $(".btn-delete").live("click", function() {
-                obj.deleteReciboConcepto(this);
-            });
-            $(".btn-edit").live("click", function() {
-                obj.edit(this);
-            });
-
-            this.loadConceptos();
-        },
-
-
-        loadReciboConceptos: function() {
-            
-        },
-        parseReciboConcepto: function() {
-           
-        },
-        bindForm: function (reciboconcepto) {
-            
-        },
-        createRowHtml: function(reciboconcepto) {
-            
-        },
-
-        add: function() {
-            
-        },
-        update: function() {
-            
-        },
-        reset: function() {
-            
-        },
-        edit: function(sender) {
-            
-        },
-        deleteReciboConcepto: function(sender) {
-            
-        }
-    };
-})();
-

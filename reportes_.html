@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.debug.js"></script>
+
+    <title>Reporte</title>
+</head>
+
+<script charset="UTF-8">
+
+    function getUrlVars()
+    {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for(var i = 0; i < hashes.length; i++)
+        {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+    }
+
+    var simbo = /%20/g;
+    var sus = ' ';
+
+    var id = getUrlVars()["id"];
+    var cliente_id = getUrlVars()["cliente_id"];
+    var domicilio = (getUrlVars()["domicilio"]).replace(simbo, sus);
+    var fecha = getUrlVars()["fecha"];
+    var monto_total = (getUrlVars()["total"]).replace(simbo, sus);
+    var nombres = (getUrlVars()["nombres"]).replace(simbo, sus);
+    var apellidos = (getUrlVars()["apellidos"]).replace(simbo, sus);
+
+    var doc = new jsPDF()
+
+    doc.setFont('helvetica')
+    doc.setFontType('bold')
+    doc.setFontSize(20);
+    doc.setTextColor(151, 33, 7)
+    doc.text(60, 20, "Recibo de Inquilinato" );
+
+
+    doc.setTextColor(84, 84, 84)
+    doc.setFont('courier')
+    doc.setFontSize(10);
+    doc.text(160, 20, "fecha: " + fecha);
+
+    doc.setFontSize(11);
+    doc.text(150, 48, "TOTAL : " + monto_total);
+
+    doc.setFontSize(12);
+    doc.text(15, 40, "Domicilio: " + domicilio);
+
+    doc.setFontSize(12);
+    doc.text(15, 50, "He recibido de : " + nombres + " "+ apellidos);
+
+    doc.setFontSize(12);
+    doc.text(15, 60, "La Cantidad de Euros : " + monto_total);
+
+    doc.setFontSize(12);
+    doc.text(15, 70, "Por el Alquiler Correspondiente al mes de la Fecha");
+
+    doc.setFontSize(12);
+    doc.text(15, 90, "El propietario");
+
+    //LINEA
+    doc.setDrawColor(180, 180, 180) // draw red lines
+    doc.setLineWidth(0.5)
+    doc.line(15, 110, 170, 110)
+
+
+
+    doc.save('a4.pdf')
+    // Landscape export, 2×4 inches
+
+    var doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'in',
+        format: [4, 2]
+    })
+
+    doc.text('Hello world!', 10, 10)
+    doc.save('two-by-four.pdf')
+</script>
+
+<body>
+
+</body>
+</html>

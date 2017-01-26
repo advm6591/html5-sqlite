@@ -17,39 +17,6 @@
     <script src="js/jquery-1.7.2.min.js"></script>
     <script src="js/nova.data.js"></script>
     <script src="js/demo.js"></script>
-    <script language="javascript" type="text/javascript">
-        function valida(e){
-            tecla = (document.all) ? e.keyCode : e.which;
-
-            //Tecla de retroceso para borrar, siempre la permite
-            if (tecla==8){
-                return true;
-            }
-
-            // Patron de entrada, en este caso solo acepta numeros
-            patron =/[0-9]/;
-            tecla_final = String.fromCharCode(tecla);
-            return patron.test(tecla_final);
-        }
-
-        function sumar()
-        {
-            var suma1 = 0;
-
-            /* Para obtener el valor */
-            if($("#campo_1").val() != "" && $("#campo_1").val() != 0){
-                suma1 = parseFloat($("#campo_1").val());
-            } else {
-                suma1 = 0;
-            }
-
-            suma_total = suma1;
-
-
-            $("#txtmonto").val(suma_total);
-            
-        }
-    </script>
 </head>
 
 <body>
@@ -84,36 +51,21 @@
             <div>
                 <input type="hidden" name="id" value="0" id="hfId"/>
 
-                Seleccione un cliente:
-                <select id="txtcliente_id" name="txtcliente_id"></select>
+                <!--<td>Seleccione un cliente: <select id="txtcliente_id" name="txtcliente_id"></select></td>-->
 
                 <div>
-                    Ingrese una fecha:
-                    <input type="date" id="txtfecha" name="txtfecha" placeholder="Fecha">
-                    <span class="ccform-addon"><i class="fa fa-calendar fa-2x"></i></span>
-                    <!--<input type="text" id="txtcliente_id" name="txtcliente_id" placeholder="txtcliente_id">-->
+                  Ingrese una fecha  <input type="date" id="txtfecha" name="txtfecha" placeholder="Monto Concepto 1">
+                    <input type="text" id="txtcliente_id" name="txtcliente_id" placeholder="txtcliente_id">
                 </div>
 
 
                 <div class="ccfield-prepend">
                     <span class="ccform-addon"><i class="fa fa-check-square fa-2x"></i></span>
-                    <input class="ccformfield"  type="text" id="txtdomicilio" placeholder="Domicilio" required="required">
-                </div>
-                <br/>
-                <a id="agregarCampo" class="btn btn-info" href="#">Agregar Concepto</a>
-                <div id="contenedor">
-                    <div class="added">
-                       
-                         Seleccione un Concepto: 
-                        <select id="txtconcepto_id" name="txtconcepto_id">
-                        </select>
-            
-                        <br/>
-                        <input type="text" name="mitexto[]" id="campo_1" placeholder="Ingrese el monto correspondiente concepto 1" onkeypress="return valida(event);" onkeyup="sumar();" value="0"/><a href="#" class="eliminar"></a>
-                    </div>
+                    <input class="ccformfield"  type="text" id="txtdomicilio" placeholder="Monto txtdomicilio 1" required="required">
                 </div>
 
-                <!--<div class="ccfield-prepend">
+
+                <div class="ccfield-prepend">
                     <span class="ccform-addon"><i class="fa fa-check-square fa-2x"></i></span>
                     <input class="ccformfield"  type="text" id="txtcliente_id" placeholder="txtcliente_id 1" required="required">
                     <input class="ccformfield"  type="text" id="txtdomicilio" placeholder="Monto txtdomicilio 1" required="required">
@@ -129,13 +81,15 @@
                     <span class="ccform-addon"><i class="fa fa-check-square fa-2x"></i></span>
                     <input class="ccformfield"  type="text" id="username" placeholder="Concepto 3" required="required">
                     <input class="ccformfield"  type="text" id="username" placeholder="Monto Concepto 3" required="required">
-                </div>-->
+                </div>
 
 
                 <div class="ccfield-prepend">
-                    <span class="ccform-addon"><i class="fa fa-money fa-2x"></i></span>
-                    <input class="ccformfield" type="text" id="txtmonto" placeholder="Monto Total" onkeypress="return valida(event);" value="0">
+                    <span class="ccform-addon"><i class="fa fa-user fa-2x"></i></span>
+                    <input class="ccformfield" type="text" id="txtmonto" placeholder="Monto Total" READONLY>
                 </div>
+
+
 
                 <div>
                     <input type="button" value="Add" id="btnAdd"/>
@@ -150,14 +104,12 @@
             <thead>
             <tr>
                 <th>DNI</th>
-                <th>Domicilio</th>
-                <th>Fecha</th>
+                <th>Nombres</th>
                 <th>Total</th>
             </tr>
             </thead>
             <tbody id="recibos">
             <tr>
-                <td> - </td>
                 <td> - </td>
                 <td> - </td>
                 <td> - </td>
@@ -186,38 +138,6 @@
     $(document).ready(function () {
         demo.db.init(function () {
             new demo.pages.Recibos().onLoaded();
-        });
-    });
-
-
-    $(document).ready(function() {
-
-        var MaxInputs       = 8; //Número Maximo de Campos
-        var contenedor       = $("#contenedor"); //ID del contenedor
-        var AddButton       = $("#agregarCampo"); //ID del Botón Agregar
-
-        //var x = número de campos existentes en el contenedor
-        var x = $("#contenedor div").length + 1;
-        var FieldCount = x-1; //para el seguimiento de los campos
-
-        $(AddButton).click(function (e) {
-            if(x <= MaxInputs) //max input box allowed
-            {
-                FieldCount++;
-                //agregar campo
-                $(contenedor).append('<div><input type="text" name="mitexto[]" id="campo_'+ FieldCount +'" placeholder="Ingrese el monto correspondiente '+ FieldCount +'"/><a href="#" class="eliminar">&times;</a></div>');
-                x++; //text box increment
-            }
-            return false;
-        });
-
-        $("body").on("click",".eliminar", function(e){ //click en eliminar campo
-            if( x > 1 ) {
-                $(this).parent('div').remove(); //eliminar el campo
-                x--;
-                FieldCount--;
-            }
-            return false;
         });
     });
 </script>

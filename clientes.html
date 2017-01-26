@@ -17,6 +17,21 @@
     <script src="js/jquery-1.7.2.min.js"></script>
     <script src="js/nova.data.js"></script>
     <script src="js/demo.js"></script>
+    <script language="javascript" type="text/javascript">
+        function valida(e){
+            tecla = (document.all) ? e.keyCode : e.which;
+
+            //Tecla de retroceso para borrar, siempre la permite
+            if (tecla==8){
+                return true;
+            }
+
+            // Patron de entrada, en este caso solo acepta numeros
+            patron =/[0-9]/;
+            tecla_final = String.fromCharCode(tecla);
+            return patron.test(tecla_final);
+        }
+    </script>
 </head>
 
 <body>
@@ -50,11 +65,11 @@
                 Crear nuevo usuario<br/>
                 <div class="ccfield-prepend">
                     <span class="ccform-addon"><i class="fa fa-user fa-2x"></i></span>
-                    <input class="ccformfield" type="text" id="dni" placeholder="DNI" required>
-                </div>
+                    <input class="ccformfield" type="text" id="dni" placeholder="DNI" onkeypress="return valida(event);" required>
+                </div class="ccfield-prepend">
                 <div class="ccfield-prepend">
                     <span class="ccform-addon"><i class="fa fa-user fa-2x"></i></span>
-                    <input class="ccformfield"  type="text" id="username" placeholder="Nombres Completos" required="required">
+                    <input class="ccformfield"  type="text" id="nombres" placeholder="Nombres Completos" required="required">
                 </div>
                 <div class="ccfield-prepend">
                     <span class="ccform-addon"><i class="fa fa-user fa-2x"></i></span>
