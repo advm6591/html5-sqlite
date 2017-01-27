@@ -19,10 +19,10 @@
     <script src="js/demo.js"></script>
     <script language="javascript" type="text/javascript">
         function valida(e, field){
-            key = (document.all) ? e.keyCode : e.which;
+            tecla = (document.all) ? e.keyCode : e.which;
 
             //Tecla de retroceso para borrar, siempre la permite
-            if (key==8){
+            if (tecla==8){
                 return true;
             }
 
@@ -175,11 +175,11 @@
                 </div>         
 
                 <div class="4u 12u$(small)">
-                    <input type="checkbox" id="chck_iva" name="chck_iva" >
+                    <input type="checkbox" id="chck_iva" name="chck_iva" chck_iva>
                     <label for="chck_iva">Aplica I.V.A.</label>
                 </div>
                 <div class="4u$ 12u$(small)">
-                    <input type="checkbox" id="chck_irpf" name="chck_irpf" >
+                    <input type="checkbox" id="chck_irpf" name="chck_irpf" chck_irpf>
                     <label for="chck_irpf">Aplica I.R.P.F.</label>
                 </div>
 
@@ -258,40 +258,40 @@
         $("#chck_irpf").on("click", function(e){
             console.log("chck_irpf: " + $("#chck_irpf").prop("checked"));
         });
-        
+
 
     });
 
 
-   /* $(document).ready(function() {
+    /* $(document).ready(function() {
 
-        var MaxInputs       = 8; //Número Maximo de Campos
-        var contenedor       = $("#contenedor"); //ID del contenedor
-        var AddButton       = $("#agregarCampo"); //ID del Botón Agregar
+     var MaxInputs       = 8; //Número Maximo de Campos
+     var contenedor       = $("#contenedor"); //ID del contenedor
+     var AddButton       = $("#agregarCampo"); //ID del Botón Agregar
 
-        //var x = número de campos existentes en el contenedor
-        var x = $("#contenedor div").length + 1;
-        var FieldCount = x-1; //para el seguimiento de los campos
+     //var x = número de campos existentes en el contenedor
+     var x = $("#contenedor div").length + 1;
+     var FieldCount = x-1; //para el seguimiento de los campos
 
-        $(AddButton).click(function (e) {
-            if(x <= MaxInputs) //max input box allowed
-            {
-                FieldCount++;
-                //agregar campo
-                $(contenedor).append('<div><input type="text" name="mitexto[]" id="campo_'+ FieldCount +'" placeholder="Ingrese el monto correspondiente '+ FieldCount +'"/><a href="#" class="eliminar">&times;</a></div>');
-                x++; //text box increment
-            }
-            return false;
-        });
+     $(AddButton).click(function (e) {
+     if(x <= MaxInputs) //max input box allowed
+     {
+     FieldCount++;
+     //agregar campo
+     $(contenedor).append('<div><input type="text" name="mitexto[]" id="campo_'+ FieldCount +'" placeholder="Ingrese el monto correspondiente '+ FieldCount +'"/><a href="#" class="eliminar">&times;</a></div>');
+     x++; //text box increment
+     }
+     return false;
+     });
 
-        $("body").on("click",".eliminar", function(e){ //click en eliminar campo
-            if( x > 1 ) {
-                $(this).parent('div').remove(); //eliminar el campo
-                x--;
-                FieldCount--;
-            }
-            return false;
-        });
-    });*/
+     $("body").on("click",".eliminar", function(e){ //click en eliminar campo
+     if( x > 1 ) {
+     $(this).parent('div').remove(); //eliminar el campo
+     x--;
+     FieldCount--;
+     }
+     return false;
+     });
+     });*/
 </script>
 </html>
