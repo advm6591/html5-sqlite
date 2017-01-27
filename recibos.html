@@ -34,16 +34,27 @@
 
         function sumar()
         {
-            var suma1 = 0;
+            var suma_total = 0;
+            
+            var x = $("#contenedor div").length;
+            var FieldCount = x-1; //para el seguimiento de los campos
+
+            for(i = 1; i<x; i++){
+                var suma = $("#campo_"+i).val();
+                if (suma != ""){
+                    suma_total += parseFloat(suma);
+                }
+            }
 
             /* Para obtener el valor */
-            if($("#campo_1").val() != "" && $("#campo_1").val() != 0){
+            /*if($("#campo_1").val() != "" && $("#campo_1").val() != 0){
                 suma1 = parseFloat($("#campo_1").val());
             } else {
                 suma1 = 0;
-            }
+            }*/
 
-            suma_total = suma1;
+            //suma_total = 0;
+
 
 
             $("#txtmonto").val(suma_total);
@@ -69,38 +80,38 @@
 
     <section id="intro" class="wrapper style1 fade-up">
         <div class="inner">
-            <h1>Registro de Clientes</h1>
+            <h1>Registro de Recibos</h1>
             <p>Ingrese la información requerida</p>
             <ul class="actions">
                 <li><a href="index.html" class="button scrolly">Volver</a></li>
             </ul>
         </div>
+    </section>
 
 
         <h3>Crear nuevo Recibo</h3>
         <br/>
 
         <form action="/" method="POST" id="formEdit">
-            <div>
+            <div class="row uniform">
                 <input type="hidden" name="id" value="0" id="hfId"/>
 
-                Seleccione un cliente:
-                <select id="txtcliente_id" name="txtcliente_id"></select>
 
-                <div>
-                    Ingrese una fecha:
+                <div class="12u$">
+                    <div class="select-wrapper">
+                        <h5>Seleccione un cliente:</h5>
+                        <select id="txtcliente_id" name="txtcliente_id"></select>
+                    </div>
+                </div>
+
+
+                <div class="6u 12u$(xsmall)">
+                    <h5>Ingrese una fecha:</h5>
                     <input type="date" id="txtfecha" name="txtfecha" placeholder="Fecha">
                     <span class="ccform-addon"><i class="fa fa-calendar fa-2x"></i></span>
-                    <!--<input type="text" id="txtcliente_id" name="txtcliente_id" placeholder="txtcliente_id">-->
                 </div>
 
-
-                <div class="ccfield-prepend">
-                    <span class="ccform-addon"><i class="fa fa-check-square fa-2x"></i></span>
-                    <input class="ccformfield"  type="text" id="txtdomicilio" placeholder="Domicilio" required="required">
-                </div>
-                <br/>
-                <a id="agregarCampo" class="btn btn-info" href="#">Agregar Concepto</a>
+                <!--<a id="agregarCampo" class="btn btn-info" href="#">Agregar Concepto</a>-->
                 <div id="contenedor">
                     <div class="added">
                        
@@ -108,67 +119,68 @@
                         <select id="txtconcepto_id" name="txtconcepto_id">
                         </select>
             
-                        <br/>
-                        <!--<input type="text" name="mitexto[]" id="campo_1" placeholder="Ingrese el monto correspondiente concepto 1" onkeypress="return valida(event);" onkeyup="sumar();" value="0"/><a href="#" class="eliminar"></a>-->
+                        <br/><br/>
                     </div>
+                </div>         
+
+                <div class="4u 12u$(small)">
+                    <input type="checkbox" id="chck_iva" name="chck_iva" checked>
+                    <label for="chck_iva">Aplica I.V.A.</label>
+                </div>
+                <div class="4u$ 12u$(small)">
+                    <input type="checkbox" id="chck_irpf" name="chck_irpf" checked>
+                    <label for="chck_irpf">Aplica I.R.P.F.</label>
                 </div>
 
-                <!--<div class="ccfield-prepend">
-                    <span class="ccform-addon"><i class="fa fa-check-square fa-2x"></i></span>
-                    <input class="ccformfield"  type="text" id="txtcliente_id" placeholder="txtcliente_id 1" required="required">
-                    <input class="ccformfield"  type="text" id="txtdomicilio" placeholder="Monto txtdomicilio 1" required="required">
+                <div class="2u 10u$(xsmall)">
+                    <span><i class="fa fa-money fa-2x"></i></span>
+                    <input class="ccformfield" type="text" id="txtmonto" placeholder="Monto Total" READONLY VALUE="0" >
                 </div>
 
-                <div class="ccfield-prepend">
-                    <span class="ccform-addon"><i class="fa fa-check-square fa-2x"></i></span>
-                    <input class="ccformfield"  type="text" id="txtmonto" placeholder="txtmonto 2" required="required">
-                    <input class="ccformfield"  type="text" id="username" placeholder="Monto Concepto 2" required="required">
-                </div>
-
-                <div class="ccfield-prepend">
-                    <span class="ccform-addon"><i class="fa fa-check-square fa-2x"></i></span>
-                    <input class="ccformfield"  type="text" id="username" placeholder="Concepto 3" required="required">
-                    <input class="ccformfield"  type="text" id="username" placeholder="Monto Concepto 3" required="required">
-                </div>-->
-
-
-                <div class="ccfield-prepend">
-                    <span class="ccform-addon"><i class="fa fa-money fa-2x"></i></span>
-                    <input class="ccformfield" type="text" id="txtmonto" placeholder="Monto Total" onkeypress="return valida(event);" value="0">
-                </div>
-
-                <div>
-                    <input type="button" value="Add" id="btnAdd"/>
-                    <input type="button" value="Update" id="btnUpdate" class="hide"/>
-                    <input type="reset" value="Cancel" id="btnCancel" class="hide"/>
+                <div class="12u$">
+                    <ul class="actions">
+                        <li><input type="button" value="Add" id="btnAdd" class="special"/></li>
+                        <li><input type="button" value="Update" id="btnUpdate" /></li>
+                        <li><input type="reset" value="Cancel" id="btnCancel" /></li>
+                    </ul>
                 </div>
             </div>
 
         </form>
+        <section>
+            <hr />
+            <h4>Registro almacenados</h4>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th align="center">DNI</th>
+                        <th align="center">Fecha</th>
+                        <th align="center">Total</th>
+                        <th align="center">Opciones</th>
+                    </tr>
+                    </thead>
 
-        <table class="data">
-            <thead>
-            <tr>
-                <th>DNI</th>
-                <th>Domicilio</th>
-                <th>Fecha</th>
-                <th>Total</th>
-            </tr>
-            </thead>
-            <tbody id="recibos">
-            <tr>
-                <td> - </td>
-                <td> - </td>
-                <td> - </td>
-                <td> - </td>
+                    <tbody id="recibos">
+                    <tr>
+                        <td> - </td>
+                        <td> - </td>
+                        <td> - </td>
+                        <td> - </td>
+                        <td>
+                            <div class="12u$">
+                                <ul class="actions">
+                                    <input type="button" value="edit" class="btn-edit" />
+                                    <input type="button" value="delete" class="btn-delete"/>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-                <td>
-                    <input type="button" value="edit" class="btn-edit"/>
-                    <input type="button" value="delete" class="btn-delete"/>
-                </td>
-            </tr>
-            </tbody>
-        </table>
 </div>
 
 </div>

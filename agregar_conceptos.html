@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<!--
+	Create by @tatigoliat /
+	Roufet.com
+-->
+<>
+<head>
+    <title>Gestión de Recibos</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script src="assets/js/ie/html5shiv.js"></script>
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <script src="js/jquery-1.7.2.min.js"></script>
+    <script src="js/nova.data.js"></script>
+    <script src="js/demo.js"></script>
+</head>
+
+<body>
+<section id="sidebar">
+    <div class="inner">
+        <nav>
+            <ul>
+                <li><a href="index.html">Bienvenido</a></li>
+            </ul>
+        </nav>
+    </div>
+</section>
+
+
+<div id="wrapper">
+
+    <section id="intro" class="wrapper style1 fade-up">
+        <div class="inner">
+            <h3>Registro de conceptos </h3>
+            <ul class="actions">
+                <li><a href="index.html" class="button scrolly">Salir</a></li>
+            </ul>
+        </div>
+
+        <h2>Ingrese los conceptos asociados al Recibo #:  <h id="demo"></h>
+        </h2>
+
+    </section>
+</div>
+
+</div>
+
+<footer id="footer" class="wrapper style1-alt">
+    <div class="inner">
+        <ul class="menu">
+            <li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://roufet.com">Roufet.com</a></li>
+        </ul>
+    </div>
+</footer>
+</body>
+
+<script>
+    function getUrlVars()
+    {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for(var i = 0; i < hashes.length; i++)
+        {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+    }
+
+    document.getElementById("demo").innerHTML = getUrlVars()["id"];
+
+    $(document).ready(function () {
+        demo.db.init(function () {
+            new demo.pages.Recibosconceptos(getUrlVars()["id"]).onLoaded();
+        });
+    });
+</script>
+
+</html>

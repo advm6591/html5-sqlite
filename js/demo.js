@@ -449,7 +449,6 @@ ClienteService.prototype = {
 var Recibo = function () {
     nova.data.Entity.call(this);
     this.cliente_id = "";
-    this.domicilio = "";
     this.fecha = "";
     this.monto_total = 0;
 };
@@ -459,7 +458,6 @@ Recibo.constructor = Recibo;
 
 Recibo.prototype.updateFrom = function(recibo) {
     this.cliente_id = recibo.cliente_id;
-    this.domicilio = recibo.domicilio;
     this.fecha = recibo.fecha;
     this.monto_total =  recibo.monto_total;
 };
@@ -521,10 +519,6 @@ ReciboService.prototype = {
             $(".btn-edit").live("click", function() {
                 obj.edit(this);
             });
-            $("#txtcliente_id").change(function() {
-                obj.change();
-            });
-
             $("#txtconcepto_id").change(function() {
                 obj.changeConcepto();
             });
@@ -571,30 +565,27 @@ ReciboService.prototype = {
             var recibo = new Recibo();
             recibo.id = $("#hfId").val() * 1;
             recibo.cliente_id = $("#txtcliente_id").val();
-            recibo.domicilio = $("#txtdomicilio").val();
             recibo.fecha = $("#txtfecha").val();
             recibo.monto_total = $("#txtmonto").val();
             return recibo;
         },
-        parseRecibosConceptos: function(id_recibo) {
+        parseRecibosConceptos: function(id_recibo,i) {
             var recibosconceptos = new RecibosConceptos();
             recibosconceptos.id = $("#hfId").val() * 1;
             recibosconceptos.recibos_id = id_recibo;
-            recibosconceptos.conceptos_id = $("#txtconcepto_id").val();
-            recibosconceptos.monto_concepto = $("#campo_1").val();
+            recibosconceptos.conceptos_id = $("#idcampo_"+i).val();
+            recibosconceptos.monto_concepto = $("#campo_"+i).val();
             return recibosconceptos;
         },
         bindForm: function (recibo) {
             $("#hfId").val(recibo.id);
             $("#txtcliente_id").val(recibo.cliente_id);
-            $("#txtdomicilio").val(recibo.domicilio);
             $("#txtfecha").val(recibo.fecha);
             $("#txtmonto").val(recibo.monto_total);
         },
         createRowHtml: function(recibo) {
             var html = '<tr data-id=' + recibo.id + '>\
                             <td>' + recibo.cliente_id + '</td>\
-                            <td>' + recibo.domicilio + '</td>\
                             <td>' + recibo.fecha + '</td>\
                             <td>' + recibo.monto_total + '</td>\
                             <td>\
@@ -621,13 +612,22 @@ ReciboService.prototype = {
             var service = new ReciboService();
             service.add(recibo, function() {
                 $("#recibos").append(obj.createRowHtml(recibo));
-                obj.addRecibosConceptos(recibo.id);
+
+                //var x = número de campos existentes en el contenedor
+                var x = $("#contenedor div").length;
+                var FieldCount = x-1; //para el seguimiento de los campos
+
+                for(i = 1; i<x; i++){
+                    obj.addRecibosConceptos(recibo.id,i);
+                }
+
+                
                 obj.reset();
             });
         },
-        addRecibosConceptos: function(id_recibo) {
+        addRecibosConceptos: function(id_recibo,i) {
             var obj = this;
-            var reciboconcepto = this.parseRecibosConceptos(id_recibo);
+            var reciboconcepto = this.parseRecibosConceptos(id_recibo,i);
             var service = new ReciboConceptoService();
             service.add(reciboconcepto, function() {
                 console.log("ReciboConcepto_ID: " + reciboconcepto.id);
@@ -640,15 +640,22 @@ ReciboService.prototype = {
             service.update(recibo, function() {
                 var $tr = $('tr[data-id="' + recibo.id + '"]');
                 $tr.replaceWith(obj.createRowHtml(recibo));
-                obj.updateRecibosConceptos(recibo.id);
+                //var x = número de campos existentes en el contenedor
+                var x = $("#contenedor div").length;
+                var FieldCount = x-1; //para el seguimiento de los campos
+
+                for(i = 1; i<x; i++){
+                    obj.updateRecibosConceptos(recibo.id,i);
+                }
+                
                 obj.reset();
                 $("#formEdit")[0].reset();
             });
         },
-        updateRecibosConceptos: function(id_recibo) {
+        updateRecibosConceptos: function(id_recibo,i) {
             var obj = this;
+            var reciboconcepto = this.parseRecibosConceptos(id_recibo,i);
             var service = new ReciboConceptoService();
-            var reciboconcepto = this.parseRecibosConceptos(id_recibo);
             service.updateReciboConcepto(reciboconcepto, function() {
                 //var $tr = $('tr[data-id="' + reciboconcepto.id + '"]');
                 //$tr.replaceWith(obj.createRowHtml(recibo));
@@ -658,13 +665,20 @@ ReciboService.prototype = {
         },
         reset: function() {
             $("#txtcliente_id").val("");
-            $("#txtdomicilio").val("");
             $("#txtfecha").val("");
             $("#txtmonto").val(0);
             $("#txtconcepto_id").val("");
-            $("#campo_1").val(0);
             $("#btnAdd").show();
             $("#btnUpdate, #btnCancel").hide();
+            var contenedor       = $("#contenedor"); //ID del contenedor
+
+            //var x = número de campos existentes en el contenedor
+            var x = $("#contenedor div").length;
+            var FieldCount = x-1; //para el seguimiento de los campos
+
+            for(i = 1; i<x; i++){
+                $("#campo_"+i).val(0);
+            }
         },
         edit: function(sender) {
             var id = $(sender).closest("tr").attr("data-id");
@@ -686,43 +700,42 @@ ReciboService.prototype = {
                 $(sender).closest("tr").remove();
             });
         },
-        change: function() {
-            
-            var id = $("#txtcliente_id").val();
-            var service = new ClienteService();
-            if(id==0){
-                $("#txtdomicilio").val("");
-            } else {
-                service.get(id, function(user) {
-                    $("#txtdomicilio").val(user.direcion);
-                });
-            } 
-        },
         changeConcepto: function() {
 
-            var text = $("#txtconcepto_id option:selected" ).html();
-            
-            //(console.log("Entre aqui: "  + MaxInputs);
-            console.log("ID Concepto: " + $("#txtconcepto_id").val());
-            console.log("text Concepto: " + text);
-            var MaxInputs       = 8; //Número Maximo de Campos
-            var contenedor       = $("#contenedor"); //ID del contenedor
-            var AddButton       = $("#agregarCampo"); //ID del Botón Agregar
 
-            //var x = número de campos existentes en el contenedor
-            var x = $("#contenedor div").length + 1;
-            var FieldCount = x-1; //para el seguimiento de los campos
 
-            console.log("Entre aqui: "  + MaxInputs);
-            console.log("Entre aqui: "  + x);
+            var text = $("#txtconcepto_id option:selected" ).html(); // OBTENGO EL TEXTO DEL CONCEPTO
+            var value = $("#txtconcepto_id").val(); // OBTENGO EL VALUE
             
-            if(x <= MaxInputs) //max input box allowed
-            {
-                //FieldCount++;
-                //agregar campo
-                $(contenedor).append('<div><input type="text" name="mitexto[]" id="campo_'+ FieldCount +'" placeholder="Ingrese el monto correspondiente '+ FieldCount +'"/><a href="#" class="eliminar">&times;</a></div>');
-                x++; //text box increment
-                FieldCount++;
+            if($("#txtconcepto_id").val() != 0){ // SI EL CONCEPTO ES = 0 NO SE HACE NADA
+                var MaxInputs       = 8; //Número Maximo de Campos
+                var contenedor       = $("#contenedor"); //ID del contenedor
+
+                //var x = número de campos existentes en el contenedor
+                var x = $("#contenedor div").length;
+                var FieldCount = x-1; //para el seguimiento de los campos
+                
+                if(x <= MaxInputs) //max input box allowed
+                {
+                    for(i = 1; i<x; i++){
+                        if(text == $("#nombre_concepto"+i).val())
+                            return;
+                    }
+                    FieldCount++;
+                    //agregar campo
+                    html = '<div> \
+                                <input class="ccformfield"  name="concepto[]" type="text" id="nombre_concepto' + FieldCount + '" placeholder="Concepto" readonly value="' + text + '"> \
+                                <input type="hidden" name="idcampo_' + FieldCount + '" value="' + value + '" id="idcampo_' + FieldCount + '"/> \
+                                <input type="text" name="mitexto[]" id="campo_' + FieldCount + '" \
+                                placeholder="Ingrese el monto correspondiente ' + FieldCount + '" \
+                                onkeypress="return valida(event);" onkeyup="sumar();"/> \
+                                <a href="#" class="eliminar">&times;</a> \
+                            </div>';
+                    //$(contenedor).append('<div><input type="text" name="mitexto[]" id="campo_'+ FieldCount +'" placeholder="Ingrese el monto correspondiente '+ FieldCount +'" onkeypress="return valida(event);" onkeyup="sumar();"/><a href="#" class="eliminar">&times;</a></div>');
+                    $(contenedor).append(html);
+                    x++; //text box increment
+                    //FieldCount++;
+                }
             }
                 
 
@@ -949,7 +962,7 @@ ReciboConceptoService.prototype = {
     },
     updateReciboConcepto:function(reciboconcepto, callback) {
         var db = demo.db.getInstance();
-        db.recibosconceptos.where("recibos_id=" + reciboconcepto.id).firstOrDefault(function(dbRecibosConceptos) {
+        db.recibosconceptos.where("recibos_id=" + reciboconcepto.id + " and conceptos_id=" + reciboconcepto.conceptos_id).firstOrDefault(function(dbRecibosConceptos) {
             dbRecibosConceptos.updateFrom(reciboconcepto);
             db.recibosconceptos.update(dbRecibosConceptos);
             db.saveChanges(function() {
@@ -992,10 +1005,13 @@ ReciboConceptoService.prototype = {
 
 
         loadReciboConceptos: function() {
-            
+            var obj = "recibir variable";
+
+                $("#recibosconceptos_id").html(obj);
         },
         parseReciboConcepto: function() {
-           
+          
+            return recibosconcepto;
         },
         bindForm: function (reciboconcepto) {
             
