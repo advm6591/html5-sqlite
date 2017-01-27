@@ -18,7 +18,7 @@
     <script src="js/nova.data.js"></script>
     <script src="js/demo.js"></script>
     <script language="javascript" type="text/javascript">
-        function valida(e){
+        function valida(e, field){
             tecla = (document.all) ? e.keyCode : e.which;
 
             //Tecla de retroceso para borrar, siempre la permite
@@ -175,11 +175,11 @@
                 </div>         
 
                 <div class="4u 12u$(small)">
-                    <input type="checkbox" id="chck_iva" name="chck_iva" checked>
+                    <input type="checkbox" id="chck_iva" name="chck_iva" >
                     <label for="chck_iva">Aplica I.V.A.</label>
                 </div>
                 <div class="4u$ 12u$(small)">
-                    <input type="checkbox" id="chck_irpf" name="chck_irpf" checked>
+                    <input type="checkbox" id="chck_irpf" name="chck_irpf" >
                     <label for="chck_irpf">Aplica I.R.P.F.</label>
                 </div>
 
@@ -250,6 +250,16 @@
         demo.db.init(function () {
             new demo.pages.Recibos().onLoaded();
         });
+
+        $("#chck_iva").on("click", function(e){
+            console.log("chck_iva: " + $("#chck_iva").prop("checked"));
+        });
+
+        $("#chck_irpf").on("click", function(e){
+            console.log("chck_irpf: " + $("#chck_irpf").prop("checked"));
+        });
+        
+
     });
 
 

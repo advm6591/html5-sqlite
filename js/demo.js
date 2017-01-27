@@ -450,6 +450,8 @@ var Recibo = function () {
     nova.data.Entity.call(this);
     this.cliente_id = "";
     this.fecha = "";
+    this.iva = false;
+    this.irpf = false;
     this.monto_total = 0;
 };
 
@@ -459,6 +461,8 @@ Recibo.constructor = Recibo;
 Recibo.prototype.updateFrom = function(recibo) {
     this.cliente_id = recibo.cliente_id;
     this.fecha = recibo.fecha;
+    this.iva = recibo.iva;
+    this.irpf = recibo.irpf;
     this.monto_total =  recibo.monto_total;
 };
 
@@ -566,6 +570,8 @@ ReciboService.prototype = {
             recibo.id = $("#hfId").val() * 1;
             recibo.cliente_id = $("#txtcliente_id").val();
             recibo.fecha = $("#txtfecha").val();
+            recibo.iva = $("#chck_iva").prop("checked");
+            recibo.irpf = $("#chck_irpf").prop("checked");
             recibo.monto_total = $("#txtmonto").val();
             return recibo;
         },
@@ -581,6 +587,8 @@ ReciboService.prototype = {
             $("#hfId").val(recibo.id);
             $("#txtcliente_id").val(recibo.cliente_id);
             $("#txtfecha").val(recibo.fecha);
+            $("#chck_iva").prop("checked",recibo.iva);
+            $("#chck_irpf").prop("checked",recibo.irpf);
             $("#txtmonto").val(recibo.monto_total);
         },
         createRowHtml: function(recibo) {
@@ -666,11 +674,12 @@ ReciboService.prototype = {
         reset: function() {
             $("#txtcliente_id").val("");
             $("#txtfecha").val("");
+            $("#chck_iva").prop("checked",false);
+            $("#chck_irpf").prop("checked",false);
             $("#txtmonto").val(0);
             $("#txtconcepto_id").val("");
             $("#btnAdd").show();
             $("#btnUpdate, #btnCancel").hide();
-            var contenedor       = $("#contenedor"); //ID del contenedor
 
             //var x = número de campos existentes en el contenedor
             var x = $("#contenedor div").length;
@@ -728,7 +737,7 @@ ReciboService.prototype = {
                                 <input type="hidden" name="idcampo_' + FieldCount + '" value="' + value + '" id="idcampo_' + FieldCount + '"/> \
                                 <input type="text" name="mitexto[]" id="campo_' + FieldCount + '" \
                                 placeholder="Ingrese el monto correspondiente ' + FieldCount + '" \
-                                onkeypress="return valida(event);" onkeyup="sumar();"/> \
+                                onkeypress="return valida(event, this);" onkeyup="sumar();"/> \
                                 <a href="#" class="eliminar">&times;</a> \
                             </div>';
                     //$(contenedor).append('<div><input type="text" name="mitexto[]" id="campo_'+ FieldCount +'" placeholder="Ingrese el monto correspondiente '+ FieldCount +'" onkeypress="return valida(event);" onkeyup="sumar();"/><a href="#" class="eliminar">&times;</a></div>');
