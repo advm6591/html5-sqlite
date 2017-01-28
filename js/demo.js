@@ -746,9 +746,10 @@ ReciboService.prototype = {
                     c_apellidos = row_cliente.apellidos;
                     c_domicilio = row_cliente.direcion;
 
+                      location.href="reportes_.html?id="+ id +"&cliente_id=" + cliente_id + "&domicilio=" + c_domicilio + "&fecha=" + fecha + "&total=" + monto_total + "&nombres=" + c_nombres +"&apellidos=" + c_apellidos ;
                 });
 
-                db.recibosconceptos.where("recibos_id=" + id ).toArray(function(row_recibos_conceptos){
+                /*db.recibosconceptos.where("recibos_id=" + id ).toArray(function(row_recibos_conceptos){
                     var j = 1;
                     for (i=0;i<row_recibos_conceptos.length;i++){
                         var recibo = row_recibos_conceptos[i];
@@ -770,8 +771,7 @@ ReciboService.prototype = {
                         console.log("c_nombres: " + c_nombres);
                         console.log("c_apellidos: " + c_apellidos);
                         console.log("montos: " + montos);
-                      location.href="reportes_.html?id="+ id +"&cliente_id=" + cliente_id + "&domicilio=" + c_domicilio + "&fecha=" + fecha + "&total=" + monto_total + "&nombres=" + c_nombres +"&apellidos=" + c_apellidos ;
-                });
+                });*/
 
                 
             });

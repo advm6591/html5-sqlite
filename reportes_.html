@@ -3,6 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.debug.js"></script>
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <!--<link rel="stylesheet" href="assets/css/ie9.css" />-->
+    <!--<link rel="stylesheet" href="assets/css/ie8.css" />-->
+    <!--<link href="assets/css/form.css" rel="stylesheet">-->
+    <script src="js/jquery-1.7.2.min.js"></script>
+    <script src="js/nova.data.js"></script>
+    <script src="js/demo.js"></script>
 
     <title>Reporte</title>
 </head>
@@ -24,7 +31,6 @@
 
     var simbo = /%20/g;
     var sus = ' ';
-
     var id = getUrlVars()["id"];
     var cliente_id = getUrlVars()["cliente_id"];
     var domicilio = (getUrlVars()["domicilio"]).replace(simbo, sus);
@@ -32,6 +38,28 @@
     var monto_total = (getUrlVars()["total"]).replace(simbo, sus);
     var nombres = (getUrlVars()["nombres"]).replace(simbo, sus);
     var apellidos = (getUrlVars()["apellidos"]).replace(simbo, sus);
+
+    
+    demo.db.init(function () {
+        var db = demo.db.getInstance();
+        db.recibosconceptos.where("recibos_id=" + id ).toArray(function(row_recibos_conceptos){
+        for (i=0;i<row_recibos_conceptos.length;i++){
+            var recibo = row_recibos_conceptos[i];
+            var conceptobd = recibo.conceptos_id;
+            var monto_concepto = recibo.monto_concepto;
+            console.log("recibo.monto_concepto : " + monto_concepto);
+            db.conceptos.where("id=" + conceptobd).firstOrDefault(function(dbConceptos) {
+                console.log("recibo.monto_concepto : " + monto_concepto);
+                //console.log("dbConceptos.nomconcepto : " + dbConceptos.nomconcepto);
+                //console.log("montos: " + montos);
+            });
+        }
+        });
+    });
+
+    
+
+    
 
     var doc = new jsPDF()
 
@@ -81,8 +109,8 @@
         format: [4, 2]
     })
 
-    doc.text('Hello world!', 10, 10)
-    doc.save('two-by-four.pdf')
+    //doc.text('Hello world!', 10, 10)
+    //doc.save('two-by-four.pdf')
 </script>
 
 <body>
